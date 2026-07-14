@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Animação — Claude corrige planilha</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0D1117;font-family:'Inter',sans-serif;color:#F9FAFB;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+/* WRAPPER */
+.demo{width:100%;max-width:860px;}
+.demo-header{text-align:center;margin-bottom:32px;}
+.demo-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#F59E0B;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:12px;display:block;}
+.demo-title{font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-0.02em;}
+
+/* STAGES */
+.stages{display:grid;grid-template-columns:1fr 80px 1fr;gap:0;align-items:start;}
+.stage{}
+.arrow-col{display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:48px;}
+.arrow-icon{font-size:28px;color:#F59E0B;animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.9)}}
+
+/* EXCEL WINDOW */
+.excel-win{border-radius:8px;overflow:hidden;border:1px solid #30363D;box-shadow:0 8px 32px rgba(0,0,0,.6);}
+.excel-bar{background:#1F6B38;padding:7px 12px;display:flex;align-items:center;gap:8px;}
+.excel-bar-dots{display:flex;gap:5px;}
+.dot{width:10px;height:10px;border-radius:50%;}
+.excel-title{font-size:11px;color:rgba(255,255,255,.8);font-family:'JetBrains Mono',monospace;margin-left:8px;}
+.excel-ribbon{background:#217346;padding:4px 12px;border-bottom:2px solid #185C37;}
+.excel-tab{display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:10px;padding:3px 10px;border-radius:3px 3px 0 0;font-weight:600;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:10px;background:#fff;color:#111;}
+.tbl th{background:#E8EAED;padding:4px 6px;border:1px solid #C8CACD;color:#555;font-weight:600;white-space:nowrap;font-size:9px;}
+.tbl td{padding:3px 6px;border:1px solid #E0E0E0;white-space:nowrap;transition:background .35s ease,color .35s ease,opacity .35s ease;}
+.row-num{background:#F1F3F4;color:#999;text-align:center;font-size:9px;width:22px;}
+
+/* BEFORE states */
+.err-orange{background:#FFF3CD;color:#92400E;font-weight:700;}
+.err-red{background:#FEE2E2;color:#DC2626;font-weight:700;}
+.ok{background:#fff;color:#111;}
+.header-row{background:#D5E8D4;}
+.header-cell{background:#D5E8D4;color:#1F6B38;font-weight:700;}
+
+/* DURANTE — célula sendo corrigida */
+.fixing{background:#FDE68A !important;color:#78350F !important;animation:cellPulse .5s ease infinite alternate;}
+@keyframes cellPulse{from{background:#FDE68A}to{background:#FCD34D}}
+
+/* DEPOIS — célula corrigida */
+.fix{background:#D1FAE5 !important;color:#065F46 !important;font-weight:700;position:relative;animation:none;}
+.fix::after{content:'✓';position:absolute;right:3px;top:50%;transform:translateY(-50%);font-size:8px;color:#059669;}
+
+/* FLAG — sinalizado para verificação */
+.flag{background:#FEF3C7 !important;color:#92400E !important;font-weight:700;animation:none;}
+
+/* DUPLICATA — linha marcada */
+.dupl td{opacity:.45;text-decoration:line-through;}
+.dupl td.row-num{opacity:1;text-decoration:none;}
+.dupl-badge{background:#FEE2E2 !important;color:#DC2626 !important;font-weight:700;text-decoration:none !important;opacity:1 !important;}
+
+/* SCAN — varredura de leitura */
+.scan td{background:#DBEAFE !important;}
+
+/* STATUS BAR */
+.excel-status{background:#217346;padding:3px 10px;font-size:9px;color:rgba(255,255,255,.7);font-family:'JetBrains Mono',monospace;display:flex;justify-content:space-between;}
+
+/* CLAUDE TERMINAL */
+.claude-win{border-radius:8px;overflow:hidden;border:1px solid #30363D;box-shadow:0 8px 32px rgba(0,0,0,.6);}
+.claude-bar{background:#161B22;padding:7px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #30363D;}
+.claude-bar-dots{display:flex;gap:5px;}
+.claude-title{font-size:11px;color:#8B949E;font-family:'JetBrains Mono',monospace;margin-left:8px;}
+.claude-body{background:#0D1117;padding:14px;min-height:320px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;}
+.prompt-label{color:#F59E0B;font-weight:600;margin-bottom:8px;}
+.prompt-text{color:#8B949E;margin-bottom:16px;font-size:10px;line-height:1.6;}
+.separator{border:none;border-top:1px solid #21262D;margin:12px 0;}
+.response-label{color:#3FB950;font-weight:600;margin-bottom:8px;}
+.response-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;opacity:0;}
+.response-item .check{color:#3FB950;flex-shrink:0;}
+.response-item .text{color:#C9D1D9;font-size:10px;}
+.response-item.highlight .text{color:#F59E0B;}
+.response-item .spin{color:#F59E0B;flex-shrink:0;display:none;}
+.response-item.working .spin{display:inline;}
+.response-item.working .check{display:none;}
+.cursor{display:inline-block;width:7px;height:13px;background:#F59E0B;animation:blink .8s step-end infinite;vertical-align:middle;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* RESULT BOX */
+.result-box{background:#0D2818;border:1px solid #1a4a2e;border-radius:6px;padding:10px;margin-top:12px;opacity:0;transition:opacity .5s;}
+.result-box.show{opacity:1;}
+.result-title{color:#3FB950;font-size:10px;font-weight:700;margin-bottom:8px;}
+.result-stat{display:flex;justify-content:space-between;font-size:10px;color:#8B949E;margin-bottom:4px;}
+.result-stat span{color:#F59E0B;font-weight:700;}
+
+/* TIMER */
+.timer{text-align:center;margin-top:20px;font-family:'JetBrains Mono',monospace;}
+.timer-num{font-size:40px;font-weight:700;color:#F59E0B;line-height:1;}
+.timer-label{font-size:11px;color:#6E7681;margin-top:4px;}
+
+/* BOTTOM BADGE */
+.bottom-badge{margin-top:28px;text-align:center;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:14px 24px;font-size:13px;color:#8B949E;}
+.bottom-badge strong{color:#F59E0B;}
+
+/* PLAY BUTTON */
+.play-btn{display:inline-flex;align-items:center;gap:8px;background:#F59E0B;color:#0D1117;font-weight:800;font-size:14px;padding:12px 28px;border-radius:8px;border:none;cursor:pointer;margin-top:20px;transition:background .15s;}
+.play-btn:hover{background:#FCD34D;}
+.play-btn.hidden{display:none;}
+
+@media(max-width:640px){
+  .stages{grid-template-columns:1fr;gap:16px;}
+  .arrow-col{padding:0;flex-direction:row;gap:8px;}
+  .arrow-icon{transform:rotate(90deg);}
+}
+</style>
+</head>
+<body>
+
+<div class="demo">
+  <div class="demo-header">
+    <span class="demo-label">Demonstração ao vivo</span>
+    <h2 class="demo-title">Planilha bagunçada → Relatório pronto</h2>
+    <button class="play-btn" id="playBtn" onclick="startDemo()">▶ Ver a mágica acontecer</button>
+  </div>
+
+  <div class="stages">
+    <!-- PLANILHA -->
+    <div class="stage">
+      <div class="mono" id="excelLabel" style="font-size:10px;color:#6E7681;text-align:center;margin-bottom:8px;letter-spacing:1.5px;">ANTES — PLANILHA REAL</div>
+      <div class="excel-win">
+        <div class="excel-bar">
+          <div class="excel-bar-dots">
+            <div class="dot" style="background:#F85149;"></div>
+            <div class="dot" style="background:#F59E0B;"></div>
+            <div class="dot" style="background:#3FB950;"></div>
+          </div>
+          <span class="excel-title" id="excelTitle">entregas-agosto.xlsx</span>
+        </div>
+        <div class="excel-ribbon"><span class="excel-tab">Plan1</span></div>
+        <div style="overflow-x:auto;">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th class="row-num"></th>
+                <th class="header-cell">Pedido</th>
+                <th class="header-cell">Data</th>
+                <th class="header-cell">Transportadora</th>
+                <th class="header-cell">Peso</th>
+                <th class="header-cell">Status</th>
+                <th class="header-cell">NF</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="row2"><td class="row-num">2</td><td class="ok">PED-00891</td><td class="ok">05/08/2024</td><td class="ok">Jadlog</td><td class="ok">12,5</td><td class="ok">Entregue</td><td class="ok">NF-4421</td></tr>
+              <tr id="row3"><td class="row-num">3</td><td class="ok">PED-00892</td><td class="err-orange" id="c3-data">08-08-2024</td><td class="err-orange" id="c3-trans">JADLOG</td><td class="ok">8,0</td><td class="err-orange" id="c3-status">entregue</td><td class="ok">NF-4422</td></tr>
+              <tr id="row4"><td class="row-num">4</td><td class="ok">PED-00893</td><td class="err-orange" id="c4-data">August 10</td><td class="err-orange" id="c4-trans">Jad Log</td><td class="err-red" id="c4-peso">abc</td><td class="ok">Em Trânsito</td><td class="err-red" id="c4-nf"></td></tr>
+              <tr id="row5"><td class="row-num">5</td><td class="ok">PED-00894</td><td class="err-orange" id="c5-data">10/08/24</td><td class="err-orange" id="c5-trans">jad-log</td><td class="ok">22,3</td><td class="err-orange" id="c5-status">ENTREGUE</td><td class="err-red" id="c5-nf">—</td></tr>
+              <tr id="row6"><td class="row-num">6</td><td class="err-red" id="c6-ped">PED-00891</td><td class="ok">05/08/2024</td><td class="ok">Jadlog</td><td class="ok">12,5</td><td class="ok">Entregue</td><td class="err-red" id="c6-nf">DUPL.</td></tr>
+              <tr id="row7"><td class="row-num">7</td><td class="ok">PED-00895</td><td class="err-orange" id="c7-data">aug/12/24</td><td class="err-orange" id="c7-trans">Trans Brasil</td><td class="ok">45,0</td><td class="ok">Devolvido</td><td class="ok">NF-4425</td></tr>
+              <tr id="row8"><td class="row-num">8</td><td class="err-red" id="c8-ped">—</td><td class="err-orange" id="c8-data">13.08.2024</td><td class="err-orange" id="c8-trans">TRANSBRASIL</td><td class="ok">31,0</td><td class="ok">Em Trânsito</td><td class="err-red" id="c8-nf">—</td></tr>
+              <tr id="row9"><td class="row-num">9</td><td class="ok">PED-00897</td><td class="err-orange" id="c9-data">14/8/24</td><td class="err-orange" id="c9-trans">Correio</td><td class="ok">3,2</td><td class="ok">Aguardando</td><td class="err-red" id="c9-nf">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="excel-status">
+          <span id="statusLeft">8 de 63 linhas visíveis</span>
+          <span style="color:#F87171;" id="statusRight">⚠ 23 erros detectados</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETA + CLAUDE -->
+    <div class="arrow-col">
+      <div>
+        <div class="arrow-icon">→</div>
+        <div class="mono" style="font-size:9px;color:#F59E0B;text-align:center;margin-top:6px;letter-spacing:1px;">Claude<br>Code</div>
+      </div>
+    </div>
+
+    <!-- TERMINAL -->
+    <div class="stage">
+      <div class="mono" style="font-size:10px;color:#6E7681;text-align:center;margin-bottom:8px;letter-spacing:1.5px;">DEPOIS — CLAUDE CODE</div>
+      <div class="claude-win">
+        <div class="claude-bar">
+          <div class="claude-bar-dots">
+            <div class="dot" style="background:#F85149;"></div>
+            <div class="dot" style="background:#F59E0B;"></div>
+            <div class="dot" style="background:#3FB950;"></div>
+          </div>
+          <span class="claude-title">claude code — terminal</span>
+        </div>
+        <div class="claude-body">
+          <div class="prompt-label">$ você escreveu:</div>
+          <div class="prompt-text" id="typedPrompt"></div>
+          <hr class="separator" id="sep1" style="display:none;">
+          <div class="response-label" id="responseLabel" style="display:none;">▸ Lendo a planilha...</div>
+
+          <div class="response-item" id="r1"><span class="spin">◌</span><span class="check">✓</span><span class="text">Normalizando transportadoras: 44 grafias → 7 únicas</span></div>
+          <div class="response-item" id="r2"><span class="spin">◌</span><span class="check">✓</span><span class="text">Convertendo datas: 9 formatos → DD/MM/YYYY</span></div>
+          <div class="response-item" id="r3"><span class="spin">◌</span><span class="check">✓</span><span class="text">Campo peso "abc" → sinalizado como erro</span></div>
+          <div class="response-item" id="r4"><span class="spin">◌</span><span class="check">✓</span><span class="text">2 pedidos duplicados identificados e marcados</span></div>
+          <div class="response-item" id="r5"><span class="spin">◌</span><span class="check">✓</span><span class="text">10 NFs em branco → listadas para verificação</span></div>
+          <div class="response-item highlight" id="r6"><span class="spin">◌</span><span class="check">✓</span><span class="text">Relatório OTIF gerado por transportadora</span></div>
+          <div class="response-item highlight" id="r7"><span class="spin">◌</span><span class="check">✓</span><span class="text">Ranking de responsável + taxa de devolução</span></div>
+
+          <div class="result-box" id="resultBox">
+            <div class="result-title">✓ Relatório pronto</div>
+            <div class="result-stat">Transportadoras normalizadas <span>7 únicas</span></div>
+            <div class="result-stat">Datas padronizadas <span>63/63</span></div>
+            <div class="result-stat">OTIF geral <span>84,1%</span></div>
+            <div class="result-stat">Melhor transportadora <span>Jadlog 91%</span></div>
+            <div class="result-stat">Pior transportadora <span>Trans Brasil 71%</span></div>
+            <div class="result-stat">Erros sinalizados <span>12 itens</span></div>
+          </div>
+
+          <span class="cursor" id="cursor" style="display:none;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMER -->
+  <div class="timer" id="timerWrap" style="display:none;">
+    <div class="timer-num" id="timerNum">0:00</div>
+    <div class="timer-label">tempo decorrido</div>
+  </div>
+
+  <!-- BADGE FINAL -->
+  <div class="bottom-badge" id="finalBadge" style="display:none;">
+    Isso que levaria <strong>sua tarde inteira</strong> saiu em <strong>menos de 40 minutos</strong>. O prompt exato está no Guia. <strong>Você roda na Semana 1.</strong>
+  </div>
+
+  <div style="text-align:center;">
+    <button class="play-btn hidden" id="replayBtn" onclick="resetDemo()">↺ Ver novamente</button>
+  </div>
+</div>
+
+<script>
+const PROMPT_TEXT = 'Analise a planilha de entregas. Normalize transportadoras, padronize datas para DD/MM/YYYY, identifique duplicatas e NFs em branco. Gere relatório de OTIF por transportadora com ranking.';
+
+// Estado original das células (para replay)
+const ORIGINAL = {};
+const CELL_IDS = ['c3-data','c3-trans','c3-status','c4-data','c4-trans','c4-peso','c4-nf','c5-data','c5-trans','c5-status','c5-nf','c6-ped','c6-nf','c7-data','c7-trans','c8-ped','c8-data','c8-trans','c8-nf','c9-data','c9-trans','c9-nf'];
+
+// Correções por etapa — sincronizadas com os itens do terminal
+const STEP_TRANS = [
+  {id:'c3-trans', text:'Jadlog'},
+  {id:'c4-trans', text:'Jadlog'},
+  {id:'c5-trans', text:'Jadlog'},
+  {id:'c7-trans', text:'Trans Brasil'},
+  {id:'c8-trans', text:'Trans Brasil'},
+  {id:'c9-trans', text:'Correios'}
+];
+const STEP_DATAS = [
+  {id:'c3-data', text:'08/08/2024'},
+  {id:'c4-data', text:'10/08/2024'},
+  {id:'c5-data', text:'10/08/2024'},
+  {id:'c7-data', text:'12/08/2024'},
+  {id:'c8-data', text:'13/08/2024'},
+  {id:'c9-data', text:'14/08/2024'},
+  {id:'c3-status', text:'Entregue'},
+  {id:'c5-status', text:'Entregue'}
+];
+const STEP_PESO = [{id:'c4-peso', text:'⚠ verificar', flag:true}];
+const STEP_NFS = [
+  {id:'c4-nf', text:'⚠ s/ NF', flag:true},
+  {id:'c5-nf', text:'⚠ s/ NF', flag:true},
+  {id:'c8-nf', text:'⚠ s/ NF', flag:true},
+  {id:'c9-nf', text:'⚠ s/ NF', flag:true},
+  {id:'c8-ped', text:'⚠ s/ pedido', flag:true}
+];
+
+let timerInterval = null;
+let seconds = 0;
+let running = false;
+let errCount = 23;
+
+function pad(n){ return n < 10 ? '0'+n : n; }
+
+function saveOriginals(){
+  CELL_IDS.forEach(id=>{
+    const el = document.getElementById(id);
+    ORIGINAL[id] = {text: el.textContent, cls: el.className};
+  });
+}
+
+function startTimer(){
+  document.getElementById('timerWrap').style.display = 'block';
+  seconds = 0;
+  timerInterval = setInterval(()=>{
+    seconds++;
+    document.getElementById('timerNum').textContent = Math.floor(seconds/60)+':'+pad(seconds%60);
+  }, 1000);
+}
+function stopTimer(){ clearInterval(timerInterval); }
+
+function typeText(text, el, speed, cb){
+  let i = 0;
+  el.textContent = '';
+  document.getElementById('cursor').style.display = 'inline-block';
+  const iv = setInterval(()=>{
+    el.textContent += text[i];
+    i++;
+    if(i >= text.length){ clearInterval(iv); if(cb) cb(); }
+  }, speed);
+}
+
+function setErrors(n){
+  errCount = Math.max(0, n);
+  const el = document.getElementById('statusRight');
+  if(errCount > 0){
+    el.style.color = '#F87171';
+    el.textContent = '⚠ '+errCount+' erros detectados';
+  } else {
+    el.style.color = '#86EFAC';
+    el.textContent = '✓ 0 erros — planilha normalizada';
+  }
+}
+
+// Varredura de leitura: destaca linha por linha
+function scanRows(cb){
+  const rows = ['row2','row3','row4','row5','row6','row7','row8','row9'];
+  rows.forEach((id, i)=>{
+    setTimeout(()=>{
+      const r = document.getElementById(id);
+      r.classList.add('scan');
+      setTimeout(()=>r.classList.remove('scan'), 220);
+      if(i === rows.length-1 && cb) setTimeout(cb, 350);
+    }, i * 140);
+  });
+}
+
+// Corrige uma lista de células: pisca âmbar → assenta em verde (ou flag)
+function fixCells(cells, stagger, errsPerCell, cb){
+  cells.forEach((c, i)=>{
+    setTimeout(()=>{
+      const el = document.getElementById(c.id);
+      el.classList.remove('err-orange','err-red','ok');
+      el.classList.add('fixing');
+      setTimeout(()=>{
+        el.classList.remove('fixing');
+        el.textContent = c.text;
+        el.classList.add(c.flag ? 'flag' : 'fix');
+        setErrors(errCount - errsPerCell);
+      }, 380);
+      if(i === cells.length-1 && cb) setTimeout(cb, 650);
+    }, i * stagger);
+  });
+}
+
+// Marca a linha duplicada
+function markDuplicate(cb){
+  const row = document.getElementById('row6');
+  const ped = document.getElementById('c6-ped');
+  const nf  = document.getElementById('c6-nf');
+  ped.classList.add('fixing'); nf.classList.add('fixing');
+  setTimeout(()=>{
+    ped.classList.remove('fixing'); nf.classList.remove('fixing');
+    row.classList.add('dupl');
+    ped.classList.add('dupl-badge');
+    nf.classList.add('dupl-badge');
+    nf.textContent = 'DUPL. ✗';
+    setErrors(errCount - 2);
+    if(cb) setTimeout(cb, 600);
+  }, 500);
+}
+
+// Ativa um item do terminal em modo "trabalhando", executa a ação, conclui
+function runStep(itemId, action, cb){
+  const item = document.getElementById(itemId);
+  item.style.transition = 'opacity .3s ease';
+  item.style.opacity = '1';
+  item.classList.add('working');
+  action(()=>{
+    item.classList.remove('working');
+    if(cb) cb();
+  });
+}
+
+function startDemo(){
+  if(running) return;
+  running = true;
+  saveOriginals();
+  document.getElementById('playBtn').classList.add('hidden');
+  startTimer();
+
+  typeText(PROMPT_TEXT, document.getElementById('typedPrompt'), 18, ()=>{
+    setTimeout(()=>{
+      document.getElementById('sep1').style.display = 'block';
+      const label = document.getElementById('responseLabel');
+      label.style.display = 'block';
+
+      // 1. Varredura de leitura
+      scanRows(()=>{
+        label.textContent = '▸ Corrigindo a planilha...';
+
+        // 2. Transportadoras
+        runStep('r1', done => fixCells(STEP_TRANS, 300, 1, done), ()=>{
+        // 3. Datas + status
+        runStep('r2', done => fixCells(STEP_DATAS, 260, 1, done), ()=>{
+        // 4. Peso inválido
+        runStep('r3', done => fixCells(STEP_PESO, 300, 1, done), ()=>{
+        // 5. Duplicata
+        runStep('r4', done => markDuplicate(done), ()=>{
+        // 6. NFs em branco
+        runStep('r5', done => fixCells(STEP_NFS, 260, 1, done), ()=>{
+          setErrors(0);
+          document.getElementById('excelLabel').textContent = 'DEPOIS — PLANILHA NORMALIZADA';
+          document.getElementById('excelLabel').style.color = '#3FB950';
+          document.getElementById('excelTitle').textContent = 'entregas-agosto-limpo.xlsx';
+          document.getElementById('statusLeft').textContent = '63 linhas processadas';
+
+          // 7. Relatório
+          runStep('r6', done => setTimeout(done, 700), ()=>{
+          runStep('r7', done => setTimeout(done, 700), ()=>{
+            label.textContent = '▸ Concluído em '+document.getElementById('timerNum').textContent;
+            document.getElementById('resultBox').classList.add('show');
+            stopTimer();
+            document.getElementById('cursor').style.display = 'none';
+            setTimeout(()=>{
+              document.getElementById('finalBadge').style.display = 'block';
+              document.getElementById('replayBtn').classList.remove('hidden');
+            }, 600);
+          });});
+        });});});});});
+      });
+    }, 600);
+  });
+}
+
+function resetDemo(){
+  running = false;
+  stopTimer();
+  seconds = 0;
+  document.getElementById('timerNum').textContent = '0:00';
+  document.getElementById('timerWrap').style.display = 'none';
+  document.getElementById('typedPrompt').textContent = '';
+  document.getElementById('sep1').style.display = 'none';
+  const label = document.getElementById('responseLabel');
+  label.style.display = 'none';
+  label.textContent = '▸ Lendo a planilha...';
+  document.getElementById('resultBox').classList.remove('show');
+  document.getElementById('finalBadge').style.display = 'none';
+  document.getElementById('cursor').style.display = 'none';
+  ['r1','r2','r3','r4','r5','r6','r7'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.style.opacity = '0';
+    el.classList.remove('working');
+  });
+  // Restaura células
+  CELL_IDS.forEach(id=>{
+    const el = document.getElementById(id);
+    el.textContent = ORIGINAL[id].text;
+    el.className = ORIGINAL[id].cls;
+  });
+  document.getElementById('row6').classList.remove('dupl');
+  setErrors(23);
+  document.getElementById('statusLeft').textContent = '8 de 63 linhas visíveis';
+  document.getElementById('excelLabel').textContent = 'ANTES — PLANILHA REAL';
+  document.getElementById('excelLabel').style.color = '#6E7681';
+  document.getElementById('excelTitle').textContent = 'entregas-agosto.xlsx';
+  document.getElementById('playBtn').classList.remove('hidden');
+  document.getElementById('replayBtn').classList.add('hidden');
+}
+</script>
+</body>
+</html>
