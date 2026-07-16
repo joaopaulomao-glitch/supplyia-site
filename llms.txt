@@ -1,0 +1,50 @@
+# SupplyIA
+> Educação e tecnologia em IA para quem opera supply chain de verdade.
+
+SupplyIA é uma plataforma brasileira de educação em inteligência artificial aplicada à logística e supply chain. Foi fundada por João Paulo Costa, Gerente de Operações com 20 anos de experiência em supply chain, WMS, TMS, PCP, Compras, Importação e Zona Franca de Manaus.
+
+## Produto principal
+
+**30 Dias de IA Aplicada ao Supply Chain** — Método CADEIA
+
+Um guia estruturado em 4 semanas para profissionais de logística que querem usar IA como ferramenta de decisão, não só de automação.
+
+- Semana 1 (C+A): Capturar e Alimentar — contexto de operação no Claude
+- Semana 2 (E): Executar — automação de análises repetitivas
+- Semana 3 (D): Decidir — relatórios com recomendação para gestão
+- Semana 4 (I+A): Integrar e Acompanhar — rotina sustentável com IA
+
+Inclui 45 prompts prontos em português, bônus de aplicação por área (compras, estoque, transporte, expedição) e templates de curva ABC e comparativo de fornecedores.
+
+Preço: R$ 197 (entrada da turma fundadora)
+Garantia: 7 dias incondicional
+Funciona com: TOTVS, SAP, WMS próprio, planilhas Excel/CSV
+Idioma: Português brasileiro
+
+## Ferramenta gratuita
+
+**Diagnóstico de Maturidade em IA** — Quiz interativo gratuito (5 minutos)
+
+Avalia o nível de maturidade em IA de operações de supply chain no Brasil e entrega resultado personalizado com próximos passos.
+
+URL: https://diagnostico.supplyia.com.br/
+
+## Sobre o fundador
+
+João Paulo Costa — Gerente de Operações, Ravibras Embalagens, Zona Franca de Manaus.
+Fundador da SupplyIA e da comunidade Supply na Veia (1.600+ profissionais de logística no WhatsApp).
+LinkedIn: https://www.linkedin.com/in/joaopaulocosta
+
+## Público-alvo
+
+Analistas, compradores, coordenadores e gestores de supply chain no Brasil que querem usar IA no dia a dia da operação — sem precisar programar.
+
+## Palavras-chave associadas
+
+inteligência artificial logística, IA supply chain, automação supply chain, OTIF automação, curva ABC IA, prompts logística, Claude AI supply chain, método CADEIA, supply chain Brasil, WMS IA, TOTVS IA, SAP IA
+
+## URLs
+
+- Página de vendas: https://supplyia.com.br/
+- Diagnóstico gratuito: https://diagnostico.supplyia.com.br/
+- Sitemap: https://supplyia.com.br/sitemap.xml

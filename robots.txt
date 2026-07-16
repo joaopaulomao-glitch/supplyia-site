@@ -1,0 +1,58 @@
+# SupplyIA — robots.txt
+# https://supplyia.com.br
+
+# ── Motores de busca ──────────────────────────────────────
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+
+# ── Crawlers de IA (LLM) ─────────────────────────────────
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic / Claude
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Google AI
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+# Microsoft / Bing / Copilot
+User-agent: Bingbot
+Allow: /
+
+User-agent: msnbot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+# Amazon Alexa / Applebot
+User-agent: Applebot
+Allow: /
+
+# ── Sitemap ───────────────────────────────────────────────
+Sitemap: https://supplyia.com.br/sitemap.xml
