@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/raio-x-salarial", "destination": "/raio-x-salarial.html" }
+  ]
+}
