@@ -1,0 +1,19 @@
+# SupplyIA
+
+> Treinamento in-company "Claude aplicado à Logística e Supply Chain", conduzido por João Paulo Costa em Manaus (AM). A equipe da empresa aplica Claude a um processo real da operação, com governança definida pela TI e resultado medido pelo gestor.
+
+## Formato
+- 2 encontros presenciais de 4 horas, turma de 6 a 12 participantes, podendo juntar áreas (Compras, PCP, Logística, Transporte, Importação, Estoque).
+- Diagnóstico com o gestor antes da proposta (D-10), relatório da turma em até 5 dias (D+5) e nova medição 30 dias depois (D+30).
+- Trabalha com arquivos reais mascarados. Não exige acesso ao ERP nem conhecimento de programação.
+- Licenças do Claude são contratadas pela empresa, à parte.
+
+## Investimento
+- Piloto fundador: R$ 4.900 por turma. Turmas seguintes: R$ 7.500.
+- Pagamento: 50% na assinatura e 50% na entrega do relatório da turma.
+
+## Contato
+- Site: https://supplyia.com.br
+- WhatsApp: +55 92 97400-8668
+
+O curso é independente e não possui vínculo oficial com a Anthropic.
