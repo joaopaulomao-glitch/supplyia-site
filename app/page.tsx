@@ -4,6 +4,8 @@ const whatsapp =
 const whatsappAjuda =
   "https://wa.me/5592974008668?text=Ol%C3%A1%2C%20Jo%C3%A3o.%20Quero%20avaliar%20o%20piloto%2C%20mas%20ainda%20n%C3%A3o%20sei%20qual%20processo%20da%20opera%C3%A7%C3%A3o%20escolher.%20Minha%20%C3%A1rea%20%C3%A9%20%5B%C3%A1rea%5D%20e%20a%20tarefa%20que%20mais%20consome%20tempo%20hoje%20%C3%A9%20%5Btarefa%5D.";
 
+const agenda = "https://calendar.app.google/QSsQ383ENYs2tF9F9";
+
 const levels = [
   { n: "01", name: "Redação", action: "Pede um texto", example: "E-mail de cobrança de fornecedor", surface: "Claude no chat", gain: "minutos" },
   { n: "02", name: "Leitura", action: "Entrega documentos", example: "Comparativo de três propostas", surface: "Claude no chat, com anexos", gain: "horas/semana" },
@@ -128,7 +130,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="final-cta"><div className="shell"><p className="eyebrow">DIAGNÓSTICO ANTES DA PROPOSTA</p><h2>Traga a tarefa que sempre volta para a fila.<br/>Em 30 minutos, João avalia se ela cabe no piloto.</h2><div className="actions center"><a className="button" href={whatsapp}>Quero avaliar meu processo →</a><a className="text-link" href={whatsappAjuda}>Não sei qual processo escolher</a></div><p className="micro">Sem apresentação comercial pronta. Primeiro entendemos o arquivo, a regra e o resultado que o gestor espera.</p></div></section>
+      <section className="final-cta"><div className="shell"><p className="eyebrow">DIAGNÓSTICO ANTES DA PROPOSTA</p><h2>Traga a tarefa que sempre volta para a fila.<br/>Em 30 minutos, João avalia se ela cabe no piloto.</h2><div className="actions center"><a className="button" href={whatsapp}>Quero avaliar meu processo →</a><a className="text-link" href={whatsappAjuda}>Não sei qual processo escolher</a></div><p className="micro agenda">Prefere escolher o horário? <a href={agenda} target="_blank" rel="noopener">Marque 30 min direto na agenda</a>, de terça a quinta.</p><p className="micro">Sem apresentação comercial pronta. Primeiro entendemos o arquivo, a regra e o resultado que o gestor espera.</p></div></section>
 
       <footer className="shell"><img src="/supplyia-logo.svg" alt="SupplyIA"/><p>Logística que aprende.</p><span>© 2026 SupplyIA · Manaus, AM</span></footer>
     </main>

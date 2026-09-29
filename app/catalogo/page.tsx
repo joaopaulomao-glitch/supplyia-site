@@ -23,6 +23,8 @@ export const metadata: Metadata = {
 const whatsapp =
   "https://wa.me/5592974008668?text=Ol%C3%A1%2C%20Jo%C3%A3o.%20Vi%20o%20cat%C3%A1logo%20de%20aplica%C3%A7%C3%B5es%20e%20quero%20avaliar%20um%20processo%20da%20minha%20opera%C3%A7%C3%A3o%20para%20o%20piloto.";
 
+const agenda = "https://calendar.app.google/QSsQ383ENYs2tF9F9";
+
 type Item = [titulo: string, nivel: "N1" | "N2" | "N3" | "N4", reais: boolean];
 
 const areas: { nome: string; itens: Item[] }[] = [
@@ -240,6 +242,7 @@ export default function Catalogo() {
             <a className="button" href={whatsapp}>Quero avaliar meu processo →</a>
             <a className="text-link" href="/catalogo.pdf" download>Baixar o catálogo em PDF</a>
           </div>
+          <p className="micro agenda">Prefere escolher o horário? <a href={agenda} target="_blank" rel="noopener">Marque 30 min direto na agenda</a>, de terça a quinta.</p>
           <p className="micro">joao.paulo@supplyia.com.br · (92) 97400-8668 · linkedin.com/in/joao-supplyia</p>
         </div>
       </section>
