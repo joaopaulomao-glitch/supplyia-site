@@ -9,9 +9,14 @@ export const metadata: Metadata = {
     title: "Catálogo: 30 aplicações de Claude em Supply Chain | SupplyIA",
     description: "O que sua equipe passa a conseguir fazer, por área.",
     url: "/catalogo",
-    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: "Claude aplicado à Logística e Supply Chain, SupplyIA" }],
+    images: [{ url: "/og-catalogo.jpg", width: 1200, height: 627, alt: "Catálogo SupplyIA: 30 aplicações de Claude em supply chain" }],
     locale: "pt_BR",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Catálogo: 30 aplicações de Claude em Supply Chain | SupplyIA",
+    images: ["/og-catalogo.jpg"],
   },
 };
 
