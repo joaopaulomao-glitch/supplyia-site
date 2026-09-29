@@ -38,7 +38,7 @@ export default function Home() {
           <img src="/supplyia-logo.svg" alt="SupplyIA" />
         </a>
         <nav aria-label="Navegação principal">
-          <a href="#niveis">4 níveis</a><a href="#aplicacoes">Aplicações</a><a href="#metodo">Método</a><a href="#governanca">Governança</a>
+          <a href="#niveis">4 níveis</a><a href="#aplicacoes">Aplicações</a><a href="#metodo">Método</a><a href="#governanca">Governança</a><a href="/catalogo">Catálogo</a>
         </nav>
         <a className="button small" href={whatsapp}>Avaliar um processo</a>
       </header>
@@ -82,6 +82,7 @@ export default function Home() {
           <div className="section-head"><h2>Em qual destas tarefas sua operação perde mais: horas ou dinheiro?</h2><p>Na conversa de diagnóstico, o gestor escolhe três tarefas. A que mais consome tempo vira o processo central do piloto. Uma com valor em reais vira o exercício de decisão da turma.</p></div>
           <div className="app-grid">{applications.map(([area,kind,title,text,gain],i)=><article className="app-card" key={title}><span>{String(i+1).padStart(2,"0")} · {area} · {kind}</span><h3>{title}</h3><p>{text}</p><p className="gain">{gain}</p></article>)}</div>
           <p className="disclaimer">O ganho depende do volume, da qualidade do dado e das regras da operação. Horas e reais saem dos números da sua empresa. Não usamos média de mercado para justificar o investimento.</p>
+          <p className="cat-more"><a className="text-link" href="/catalogo">Ver as 30 aplicações por área →</a></p>
         </div>
       </section>
 
